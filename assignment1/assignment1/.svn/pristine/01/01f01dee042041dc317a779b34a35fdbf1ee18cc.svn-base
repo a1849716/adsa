@@ -10,7 +10,7 @@ string school_add(string n1, string n2, int base) {
   reverse(n2.begin(), n2.end());
 
   // Get larger of two numbers (n1 is larger of the two)
-  if (n1.size() < n2.size()) {
+  if (n1.length() < n2.length()) {
     swap(n1, n2);
   }
 
@@ -26,23 +26,22 @@ string school_add(string n1, string n2, int base) {
 
   for (int i = 0; i < n1.length(); i++) {
     int curr_sum = (n1[i] - '0') + (n2[i] - '0') + carry;
-    carry = curr_sum / base;
-    curr_sum %= base;
+    carry = 0;
+    if (curr_sum >= base && i != (n1.length() - 1)) {
+      carry = 1;
+      curr_sum = curr_sum % base;
+    } else {
+      carry = 0;
+    }
+
+    if (curr_sum == 2 && base == 2) {
+      curr_sum = 10;
+    }
     sum = to_string(curr_sum) + sum;
-  }
-
-  // Adding remaining carry
-  if (carry != 0) {
-    sum = to_string(carry) + sum;
-  }
-
-  while (sum[0] == '0' && sum.size() > 1) {
-    sum = sum.substr(1);
   }
 
   return sum;
 };
-
 
 string school_sub(string n1, string n2, int base) {
   // Get larger of two numbers (n1 is larger of the two)
@@ -74,9 +73,7 @@ string school_sub(string n1, string n2, int base) {
 
     total = to_string(curr_total) + total;
   }
-  while (total[0] == '0' && total.size() > 1) {
-    total = total.substr(1);
-  }
+
   return total;
 }
 
@@ -153,7 +150,7 @@ string karatsuba_mult(string n1, string n2, int base) {
   string temp_sum = school_add(ac, bd, base);
   string sum = school_add(temp_sum, z1, base);
 
-  while (sum[0] == '0' && sum.size() > 1) {
+  while (sum[0] == '0') {
     sum = sum.substr(1);
   }
   // cout << "sum after 0: " << sum << endl;
