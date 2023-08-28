@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <algorithm>
 using namespace std;
 
 string school_add(string n1, string n2, int base) {
@@ -43,15 +44,9 @@ string school_add(string n1, string n2, int base) {
 };
 
 int karatsuba_mult(int n1, int n2, int base) {
-  int num1Count = log10(n1) + 1;
-  int num2Count = log10(n2) + 1;
-  int carry = 0;
-  int prod = 0;
-  if (num1Count == 1 && num2Count == 1 && base == 10) {
-    prod = n1 * n2;
-    return prod;
-  }
+  
 };
+
 
 int main() {
   string n1, n2;
