@@ -1,0 +1,222 @@
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+class node {
+ public:
+  int height;
+  int val;
+  node* left;
+  node* right;
+};
+
+int height(node* n) {
+  if (n == NULL) {
+    return 0;
+  }
+  return n->height;
+}
+
+int max(int a, int b) {
+  if (a > b) {
+    return a;
+  } else {
+    return b;
+  }
+}
+
+int balance_factor(node* n) {
+  if (n == NULL) {
+    return 0;
+  }
+  int bf = height(n->left) - height(n->right);
+  return bf;
+}
+
+// node functions
+node* newNode(int num) {
+  node* new_node = new node();
+  new_node->val = num;
+  new_node->left = NULL;
+  new_node->right = NULL;
+  new_node->height = 1;
+  return new_node;
+}
+
+node* l_rotate(node* tree) {
+  node* temp1;
+  node* temp2;
+  temp1 = tree->right;
+  temp2 = temp1->left;
+  temp1->left = tree;
+  tree->right = temp2;
+
+  // find heights
+  tree->height = max(height(tree->left), height(tree->right) + 1);
+  temp1->height = max(height(temp1->left), height(temp1->right) + 1);
+  return temp1;
+}
+
+node* r_rotate(node* tree) {
+  node* temp1;
+  node* temp2;
+  temp1 = tree->left;
+  temp2 = temp1->right;
+  temp1->right = tree;
+  tree->left = temp2;
+
+  // find heights
+  tree->height = max(height(tree->left), height(tree->right) + 1);
+  temp1->height = max(height(temp1->left), height(temp1->right) + 1);
+  return temp1;
+}
+
+node* insert_int(node* root, int target) {
+  if (root == NULL) {
+    return newNode(target);
+  }
+  if (target < root->val) {
+    root->left = insert_int(root->left, target);
+  } else if (target > root->val) {
+    root->right = insert_int(root->right, target);
+  } else {
+    return root;
+  }
+
+  root->height = 1 + max(height(root->left), height(root->right));
+
+  int bf = balance_factor(root);
+
+  if (bf > 1 && target < node->left->val) {
+    return r_rotate(root);
+  }
+
+  if (bf < -1 && target > node->right->val) {
+    return l_rotate(root);
+  }
+
+  if (bf > 1 && target > node->left->val) {
+    root->left = l_rotate(root->left);
+    return r_rotate(root);
+  }
+
+  if (bf < -1 && target < node->right->val) {
+    root->left = r_rotate(root->right);
+    return l_rotate(root);
+  }
+
+  return root;
+}
+
+node* get_min_val(node* root) {
+  node* temp = root;
+
+  while (temp->left != NULL) {
+    current = current->left;
+  }
+  return current;
+}
+
+node* delete_int(node* root, int target) {
+  if (root == NULL) {
+    return root;
+  }
+  if (target < root->val) {
+    root->left = delete_int(root->left, target);
+  } else if (target > root->val) {
+    root->right = delete_int(root->right, target);
+  } else {
+    if (root->left == NULL || root->right == NULL) {
+      node* temp = NULL;
+      if (temp == root->left) {
+        temp = root->right;
+      } else {
+        temp = root->left
+      }
+
+      if (temp == NULL) {
+        temp = root;
+        root = NULL;
+      } else {
+        root = temp;
+      }
+      else {
+        temp = get_min_val(root->right);
+        root->val = temp->val;
+        root->right = delete_int(root->right, temp - val);
+      }
+    }
+    if (root == NULL) {
+      return root;
+    }
+    root->height = 1 + max(height(root->left), height(root->right));
+
+    int bf = balance_factor(root);
+
+    if (bf > 1 && balance_factor(node->left) >= 0) {
+      return r_rotate(root);
+    }
+
+    if (bf < -1 && balance_factor(node->right) <= 0) {
+      return l_rotate(root);
+    }
+
+    if (bf > 1 && balance_factor(node->left) < 0) {
+      root->left = l_rotate(root->left);
+      return r_rotate(root);
+    }
+
+    if (bf < -1 && balance_factor(node->right) > 0) {
+      root->left = r_rotate(root->right);
+      return l_rotate(root);
+    }
+
+    return root;
+  }
+}
+
+// print functions
+void in_order(node* root) {}
+
+void pre_order(node* root) {}
+
+void post_order(node* root) {}
+
+// process inputs, call insert_int && delete_int accordingly
+void input(string input_cmd) {
+  // using sstream to process input
+  istringstream lol(input_cmd);
+
+  string temp;
+
+  while (lol >> temp) {
+    if (temp[0] == 'A') {
+      int num = stoi(temp.substr(1));
+    }
+
+    else if (temp[0] == 'D') {
+      int num = stoi(temp.substr(1));
+    }
+
+    else if (temp[0] == 'P') {
+      {
+        if (temp[1] == 'O') {
+          cout << "Printing post-order";
+        } else if (temp[1] == 'R') {
+          cout << "Printing Pre-order";
+        }
+      }
+    } else if (temp[0] == 'I') {
+      cout << "Printing in-order";
+    }
+  }
+}
+
+int main() {
+  string input_cmd;
+  cout << "Enter: ";
+  cin >> input_cmd;
+  input(input_cmd);
+}
