@@ -50,6 +50,7 @@ node* l_rotate(node* tree) {
   node* temp2;
   temp1 = tree->right;
   temp2 = temp1->left;
+
   temp1->left = tree;
   tree->right = temp2;
 
@@ -64,6 +65,7 @@ node* r_rotate(node* tree) {
   node* temp2;
   temp1 = tree->left;
   temp2 = temp1->right;
+
   temp1->right = tree;
   tree->left = temp2;
 
@@ -75,34 +77,42 @@ node* r_rotate(node* tree) {
 
 node* insert_int(node* root, int target) {
   if (root == NULL) {
+    // cout << "making a new node" << endl;
     return newNode(target);
   }
   if (target < root->val) {
+    // cout << "target is going left" << endl;
     root->left = insert_int(root->left, target);
   } else if (target > root->val) {
+    // cout << "target is going right" << endl;
     root->right = insert_int(root->right, target);
   } else {
     return root;
   }
 
   root->height = 1 + max(height(root->left), height(root->right));
-
+  // cout << "height of the root = " << root->height << endl;
   int bf = balance_factor(root);
+  // cout << "balance factor: " << bf << endl;
 
   if (bf > 1 && target < root->left->val) {
+    // cout << "right rotate" << endl;
     return r_rotate(root);
   }
 
   if (bf < -1 && target > root->right->val) {
+    // cout << "left rotate" << endl;
     return l_rotate(root);
   }
 
   if (bf > 1 && target > root->left->val) {
+    // cout << "left_right rotate" << endl;
     root->left = l_rotate(root->left);
     return r_rotate(root);
   }
 
   if (bf < -1 && target < root->right->val) {
+    // cout << "right left rotate" << endl;
     root->left = r_rotate(root->right);
     return l_rotate(root);
   }
@@ -113,8 +123,8 @@ node* insert_int(node* root, int target) {
 node* get_min_val(node* root) {
   node* temp = root;
 
-  while (temp->left != NULL) {
-    temp = temp->left;
+  while (temp->right != NULL) {
+    temp = temp->right;
   }
   return temp;
 }
@@ -128,31 +138,41 @@ node* delete_int(node* root, int target) {
   } else if (target > root->val) {
     root->right = delete_int(root->right, target);
   } else {
-    if (root->left == NULL || root->right == NULL) {
+    if ((root->left == NULL) || (root->right == NULL)) {
       node* temp = NULL;
-      if (temp == root->left) {
-        temp = root->right;
-      } else {
+
+      if (root->left != NULL) {
         temp = root->left;
+        delete root;
+        return temp;
+      }
+
+      else if (root->right != NULL) {
+        temp = root->right;
+        delete root;
+        return temp;
       }
 
       if (temp == NULL) {
         temp = root;
         root = NULL;
-      } else {
+      } else
         *root = *temp;
-        free(temp);
-      }
-    } else {
+      delete temp;
+    }
+
+    else {
       node* temp = get_min_val(root->right);
+
       root->val = temp->val;
+
       root->right = delete_int(root->right, temp->val);
-      if (root == NULL) {
-        return root;
-      }
     }
   }
 
+  if (root == NULL) {
+    return root;
+  }
   root->height = 1 + max(height(root->left), height(root->right));
 
   int bf = balance_factor(root);
@@ -180,37 +200,31 @@ node* delete_int(node* root, int target) {
 
 // print functions
 void in_order(node* root) {
-  if (root == NULL) {
-    return;
+  if (root != NULL) {
+    in_order(root->left);
+    cout << root->val << " ";
+    in_order(root->right);
   }
-
-  in_order(root->left);
-  cout << root->val << " ";
-  in_order(root->right);
 }
 
 void pre_order(node* root) {
-  if (root == NULL) {
-    return;
+  if (root != NULL) {
+    cout << root->val << " ";
+    pre_order(root->left);
+    pre_order(root->right);
   }
-  cout << root->val << " ";
-
-  pre_order(root->left);
-  pre_order(root->right);
 }
 
 void post_order(node* root) {
-  if (root == NULL) {
-    return;
+  if (root != NULL) {
+    post_order(root->left);
+    post_order(root->right);
+    cout << root->val << " ";
   }
-
-  post_order(root->left);
-  post_order(root->right);
-  cout << root->val << " ";
 }
 
 // process inputs, call insert_int && delete_int accordingly
-void input(node* root, string input_cmd) {
+void input(node*& root, string input_cmd) {
   // using sstream to process input
   istringstream lol(input_cmd);
 
@@ -219,12 +233,12 @@ void input(node* root, string input_cmd) {
   while (lol >> temp) {
     if (temp[0] == 'A') {
       int num = stoi(temp.substr(1));
-      insert_int(root, num);
+      root = insert_int(root, num);
     }
 
     else if (temp[0] == 'D') {
       int num = stoi(temp.substr(1));
-      delete_int(root, num);
+      root = delete_int(root, num);
     }
 
     else if (temp[0] == 'P') {
@@ -242,8 +256,14 @@ void input(node* root, string input_cmd) {
 }
 
 int main() {
-  string input_cmd;
-  node* tree;
-  cin >> input_cmd;
-  input(tree, input_cmd);
+  string lmaoxd;
+  node* root = NULL;
+  cin >> lmaoxd;
+  input(root, lmaoxd);
+
+  if (root == NULL) {
+    cout << "EMPTY" << endl;
+  }
+
+  return 0;
 }
