@@ -2,6 +2,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include<bits/stdc++.h>
 using namespace std;
 
 class node {
@@ -12,27 +13,11 @@ class node {
   node* right;
 };
 
-int height(node* n) {
-  if (n == NULL) {
+int height(node* root) {
+  if (root == NULL) {
     return 0;
   }
-  return n->height;
-}
-
-int max(int a, int b) {
-  if (a >= b) {
-    return a;
-  } else {
-    return b;
-  }
-}
-
-int balance_factor(node* n) {
-  if (n == NULL) {
-    return 0;
-  }
-  int bf = height(n->left) - height(n->right);
-  return bf;
+  return root->height;
 }
 
 // node functions
@@ -42,22 +27,8 @@ node* newNode(int num) {
   new_node->left = NULL;
   new_node->right = NULL;
   new_node->height = 1;
+  
   return new_node;
-}
-
-node* l_rotate(node* tree) {
-  node* temp1;
-  node* temp2;
-  temp1 = tree->right;
-  temp2 = temp1->left;
-
-  temp1->left = tree;
-  tree->right = temp2;
-
-  // find heights
-  tree->height = max(height(tree->left), height(tree->right) + 1);
-  temp1->height = max(height(temp1->left), height(temp1->right) + 1);
-  return temp1;
 }
 
 node* r_rotate(node* tree) {
@@ -70,15 +41,37 @@ node* r_rotate(node* tree) {
   tree->left = temp2;
 
   // find heights
-  tree->height = max(height(tree->left), height(tree->right) + 1);
-  temp1->height = max(height(temp1->left), height(temp1->right) + 1);
+  tree->height = max(height(tree->left), height(tree->right)) + 1;
+  temp1->height = max(height(temp1->left), height(temp1->right)) + 1;
   return temp1;
+}
+
+node* l_rotate(node* tree) {
+  node* temp1;
+  node* temp2;
+  temp1 = tree->right;
+  temp2 = temp1->left;
+
+  temp1->left = tree;
+  tree->right = temp2;
+
+  // find heights
+  tree->height = max(height(tree->left), height(tree->right)) + 1;
+  temp1->height = max(height(temp1->left), height(temp1->right)) + 1;
+  return temp1;
+}
+
+int balance_factor(node* root) {
+  if (root == NULL) {
+    return 0;
+  }
+  return height(root->left) - height(root->right);
 }
 
 node* insert_int(node* root, int target) {
   if (root == NULL) {
     // cout << "making a new node" << endl;
-    return newNode(target);
+    return (newNode(target));
   }
   if (target < root->val) {
     // cout << "target is going left" << endl;
@@ -113,7 +106,7 @@ node* insert_int(node* root, int target) {
 
   if (bf < -1 && target < root->right->val) {
     // cout << "right left rotate" << endl;
-    root->left = r_rotate(root->right);
+    root->right = r_rotate(root->right);
     return l_rotate(root);
   }
 
@@ -123,8 +116,8 @@ node* insert_int(node* root, int target) {
 node* get_min_val(node* root) {
   node* temp = root;
 
-  while (temp->right != NULL) {
-    temp = temp->right;
+  while (temp->left != NULL) {
+    temp = temp->left;
   }
   return temp;
 }
@@ -156,9 +149,10 @@ node* delete_int(node* root, int target) {
       if (temp == NULL) {
         temp = root;
         root = NULL;
-      } else
+      } else {
         *root = *temp;
-      delete temp;
+        delete temp;
+      }
     }
 
     else {
@@ -173,6 +167,7 @@ node* delete_int(node* root, int target) {
   if (root == NULL) {
     return root;
   }
+
   root->height = 1 + max(height(root->left), height(root->right));
 
   int bf = balance_factor(root);
@@ -181,17 +176,18 @@ node* delete_int(node* root, int target) {
     return r_rotate(root);
   }
 
-  if (bf < -1 && balance_factor(root->right) <= 0) {
-    return l_rotate(root);
-  }
-
   if (bf > 1 && balance_factor(root->left) < 0) {
     root->left = l_rotate(root->left);
     return r_rotate(root);
   }
 
+  if (bf < -1 && balance_factor(root->right) <= 0) {
+    return l_rotate(root);
+  }
+
+
   if (bf < -1 && balance_factor(root->right) > 0) {
-    root->left = r_rotate(root->right);
+    root->right = r_rotate(root->right);
     return l_rotate(root);
   }
 
@@ -224,7 +220,7 @@ void post_order(node* root) {
 }
 
 // process inputs, call insert_int && delete_int accordingly
-void input(node*& root, string input_cmd) {
+void input(node* root, string input_cmd) {
   // using sstream to process input
   istringstream lol(input_cmd);
 
@@ -260,10 +256,6 @@ int main() {
   node* root = NULL;
   getline(cin, lmaoxd);
   input(root, lmaoxd);
-
-  if (root == NULL) {
-    cout << "EMPTY" << endl;
-  }
 
   return 0;
 }
