@@ -26,7 +26,7 @@ node* newNode(int num) {
   new_node->left = NULL;
   new_node->right = NULL;
   new_node->height = 1;
-  
+
   return new_node;
 }
 
@@ -184,7 +184,6 @@ node* delete_int(node* root, int target) {
     return l_rotate(root);
   }
 
-
   if (bf < -1 && balance_factor(root->right) > 0) {
     root->right = r_rotate(root->right);
     return l_rotate(root);
@@ -234,18 +233,28 @@ void input(node* root, string input_cmd) {
     else if (temp[0] == 'D') {
       int num = stoi(temp.substr(1));
       root = delete_int(root, num);
-    }
-
-    else if (temp[0] == 'P') {
+    } else if (temp[0] == 'P') {
       {
         if (temp[1] == 'O') {
-          post_order(root);
+          if (root == NULL) {
+            cout << "EMPTY";
+          } else {
+            post_order(root);
+          }
         } else if (temp[1] == 'R') {
-          pre_order(root);
+          if (root == NULL) {
+            cout << "EMPTY";
+          } else {
+            pre_order(root);
+          }
         }
       }
     } else if (temp[0] == 'I') {
-      in_order(root);
+      if (root == NULL) {
+        cout << "EMPTY";
+      } else {
+        in_order(root);
+      }
     }
   }
 }
@@ -255,10 +264,6 @@ int main() {
   node* root = NULL;
   getline(cin, lmaoxd);
   input(root, lmaoxd);
-
-  if(root == NULL){
-    cout << "EMPTY";
-  }
 
   return 0;
 }
