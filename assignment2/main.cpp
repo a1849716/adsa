@@ -116,8 +116,8 @@ node* insert_int(node* root, int target) {
 node* get_min_val(node* root) {
   node* temp = root;
 
-  while (temp->left != NULL) {
-    temp = temp->left;
+  while (temp->right != NULL) {
+    temp = temp->right;
   }
   return temp;
 }
@@ -156,11 +156,11 @@ node* delete_int(node* root, int target) {
     }
 
     else {
-      node* temp = get_min_val(root->right);
+      node* temp = get_min_val(root->left);
 
       root->val = temp->val;
 
-      root->right = delete_int(root->right, temp->val);
+      root->left = delete_int(root->left, temp->val);
     }
   }
 
@@ -256,6 +256,10 @@ int main() {
   node* root = NULL;
   getline(cin, lmaoxd);
   input(root, lmaoxd);
+
+  if(root == NULL){
+    cout << "EMPTY";
+  }
 
   return 0;
 }
