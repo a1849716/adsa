@@ -258,7 +258,7 @@ void input(node*& root, string input_cmd) {
 int main() {
   string lmaoxd;
   node* root = NULL;
-  getline(cin, lmaoxd);
+  cin >> lmaoxd;
   input(root, lmaoxd);
 
   if (root == NULL) {
