@@ -6,14 +6,11 @@
 class node {
  public:
   std::string value;
-  node* next;
-  std::string status;
+  std::string status = "never used";
 };
 
-node* new_node(std::string val, node* next, std::string status) {
-  node* lol = new node;
+node* change_node(node* lol, std::string val, std::string status) {
   lol->value = val;
-  lol->next = next;
   lol->status = status;
 }
 
@@ -25,11 +22,10 @@ int hash_func(std::string str) {
 bool search(node* hash_table[], std::string str) {
   int index = hash_func(str) - 97;
   node* curr_node = hash_table[index];
-  if (curr_node == nullptr) {
+  if (curr_node->status == "never used") {
     return false;
   } else {
-    while (curr_node != nullptr) {
-      curr_node->next;
+    while (curr_node->status=="occupied") {
       if (curr_node->value == str) {
         return true;
       }
@@ -44,13 +40,13 @@ node* insertion(node* hash_table[], std::string str) {
   }
 
   int index = hash_func(str) - 97;
-  if (hash_table[index] == nullptr) {
-    hash_table[index] == new_node(str, nullptr, "occupied");
+  if (hash_table[index]->status == "never used") {
+    change_node(hash_table[index], str, "occupied");
   } else {
     while(hash_table[index]->status == "occupied"){
     index++;
     }
-    hash_table[index] = new_node(str, nullptr, "occupied");
+    hash_table[index] = change_node(hash_table[index], "str", "occupied");
   }
 }
 
@@ -64,36 +60,24 @@ node* deletion(node* hash_table[], std::string str) {
   while (hash_table[index]->value!= str){
     index++;
   }
-  hash_table[index]->next = nullptr;
-  hash_table[index]->status = "tombstone";
-  hash_table[index]->value = "";
+  change_node(hash_table[index], "", "tombstone");
 };
 
-void input(node* hash_table[], std::string input_cmd) {
-  // using sstream to process input
-  std::istringstream lol(input_cmd);
-
-  std::string temp;
-
-  while (lol >> temp) {
-    if (temp[0] == 'A') {
-      int num = stoi(temp.substr(1));
-      std::cout << "Add";
-    }
-
-    else if (temp[0] == 'D') {
-      int num = stoi(temp.substr(1));
-      std::cout << "Delete";
+void print(node* hash_table[]){
+  for(int i = 0; i < 26; i++){
+    if(hash_table[i]->status == "occupied"){
+      std::cout << hash_table[i]->value<<std::endl;
     }
   }
-}
+};
 // 'a' = 97, therefore +97 = current array index
 
 int main() {
   node* hash_table[26];
   for (int i = 0; i < 26; i++) {
-    node * curr_node = new node;
-    curr_node->status = "never used";
-    hash_table[i] = curr_node;
+    hash_table[i] = new node;
   }
+  std::string input;
+  std::cin >> input;
+
 }
